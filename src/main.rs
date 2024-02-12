@@ -6,6 +6,9 @@
 use hyprland::data::{Client, Clients};
 use hyprland::prelude::*;
 use hyprland::event_listener::EventListenerMutable as EventListener;
+use hyprland::shared::HyprError;
+use freedesktop_icon_lookup::{Cache, LookupParam};
+use std::path::PathBuf;
 //use gtk::{self, prelude::*};
 
 fn main() -> hyprland::Result<()> {
@@ -28,10 +31,19 @@ fn main() -> hyprland::Result<()> {
     // Create a event listener
     let mut event_listener = EventListener::new();
 
-    event_listener.add_window_open_handler(f);
+    //event_listener.add_window_open_handler(f);
 
-    event_listener.start_listener()
+    //event_listener.start_listener()
 
+
+    let theme = "Adwaita";
+    let mut cache = Cache::new().unwrap();
+    cache.load(theme).unwrap_or(());
+    let icon: Option<PathBuf> = cache.lookup("firefox", theme);
+
+    println!("{:?}", icon);
+
+    Ok(())
 
 }
 

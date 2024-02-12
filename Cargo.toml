@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 #gtk = { version = "0.8.0", package = "gtk4", features = ["v4_12"] }
 hyprland = "0.3"
+freedesktop-icon-lookup = "0.1"
