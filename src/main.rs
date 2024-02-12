@@ -10,6 +10,9 @@ use hyprland::shared::HyprError;
 use freedesktop_icon_lookup::{Cache, LookupParam};
 use std::path::PathBuf;
 //use gtk::{self, prelude::*};
+use freedesktop_icons::lookup;
+
+
 
 fn main() -> hyprland::Result<()> {
     //let _ = gtk::init();
@@ -29,19 +32,23 @@ fn main() -> hyprland::Result<()> {
         });
     
     // Create a event listener
-    let mut event_listener = EventListener::new();
-
+    //let mut event_listener = EventListener::new();
     //event_listener.add_window_open_handler(f);
-
     //event_listener.start_listener()
 
 
     let theme = "Adwaita";
     let mut cache = Cache::new().unwrap();
-    cache.load(theme).unwrap_or(());
+    cache.load(theme).unwrap();
     let icon: Option<PathBuf> = cache.lookup("firefox", theme);
+    let icon2: Option<PathBuf> = cache.lookup("kitty", theme);
+    let icon3 = lookup("firefox").find();
+    let icon4 = lookup("kate").find();
 
     println!("{:?}", icon);
+    println!("{:?}", icon2);
+    println!("{:?}", icon3);
+    println!("{:?}", icon4);
 
     Ok(())
 
