@@ -1,18 +1,58 @@
 #![doc = include_str ! ("../README.md")]
 
-
-#[allow(unused, unused_imports)]
-
-use hyprland::data::{Client, Clients};
-use hyprland::prelude::*;
-use hyprland::event_listener::EventListenerMutable as EventListener;
-use hyprland::shared::HyprError;
-use freedesktop_icon_lookup::{Cache, LookupParam};
-use std::path::PathBuf;
-//use gtk::{self, prelude::*};
+//use freedesktop_icon_lookup::{Cache, LookupParam};
 use freedesktop_icons::lookup;
+#[allow(unused, unused_imports)]
+use hyprland::data::{Client, Clients};
+use hyprland::event_listener::{EventListenerMutable as EventListener, State, WindowOpenEvent};
+use hyprland::prelude::*;
+use std::path::PathBuf;
+use std::str::FromStr;
 
+fn list_apps() -> Vec<Client> {
+    let clients = Clients::get();
 
+    match clients {
+        Ok(clients) => clients
+            .into_iter()
+            .filter(|c| c.class != "")
+            .collect::<Vec<Client>>(),
+        Err(_) => Vec::new(),
+    }
+}
+
+fn get_icon(client: &Client, theme: &str) -> PathBuf {
+    let client_class = client.initial_class.to_lowercase();
+    let default_icon = PathBuf::from_str("/usr/share/weston/wayland.svg");
+    match lookup(&client_class).with_theme(theme).find() {
+        Some(icon_path) => icon_path,
+        None => match lookup(&client_class).find() {
+            Some(icon_path) => icon_path,
+            None => lookup(client.initial_title.to_lowercase().as_str())
+                .with_theme(theme)
+                .find()
+                .unwrap_or(default_icon.unwrap()),
+        },
+    }
+
+    //.unwrap_or(PathBuf::from_str("/usr/share/weston/wayland.svg").unwrap())
+}
+
+//fn windows_list(a: &mut State, b: WindowOpenEvent ) -> () {
+fn windows_list() -> () {
+        //println!("a: {:?}, b: {:?}", a, b);
+        list_apps()
+        .iter()
+        .map(|c| {
+            (
+                c.address.to_string(),
+                &c.class,
+                get_icon(c, "suru-4all-dark"),
+            )
+        })
+        .for_each(|i| println!("{:?}", i));
+    
+}
 
 fn main() -> hyprland::Result<()> {
     //let _ = gtk::init();
@@ -20,41 +60,50 @@ fn main() -> hyprland::Result<()> {
     //println!("{teste:?}");
     //println!("{:?}", teste.icon_name());
     //println!("{:?}", teste.icon_size());
-    let clients = Clients::get().unwrap();
-    println!("{:?}", &clients);
+    //let clients = Clients::get().unwrap();
+    //println!("{:?}", &clients);
     //println!("{:?}", &clients.count());
 
-    clients
+    //let clients = list_apps();
+    //clients.iter().for_each(|c| {
+    //    println!("{:?}", c.class);
+    //println!("{:?}", c.title);
+    //});
+
+    let window_list = |a: &_,b: &_| {
+        println!("a: {:?}, b: {:?}", a, b);
+        list_apps()
         .iter()
-        .for_each(|c| {
-            println!("{:?}", c.class);
-            println!("{:?}", c.title);
-        });
-    
+        .map(|c| {
+            (
+                c.address.to_string(),
+                &c.class,
+                get_icon(c, "suru-4all-dark"),
+            )
+        })
+        .for_each(|i| println!("{:?}", i))};
+
+    window_list("","");
+
     // Create a event listener
-    //let mut event_listener = EventListener::new();
-    //event_listener.add_window_open_handler(f);
-    //event_listener.start_listener()
+    let mut event_listener = EventListener::new();
+    event_listener.add_window_open_handler(|_,_| windows_list());
+    event_listener.start_listener()
 
+    //let theme = "suru-4all-dark";
+    //let mut cache = Cache::new().unwrap();
+    //cache.load(theme).unwrap();
+    //let icon: Option<PathBuf> = cache.lookup("firefox", theme);
+    //let icon2: Option<PathBuf> = cache.lookup("kitty", theme);
+    //let icon3 = lookup("firefox").find();
+    //let icon4 = lookup("Wayland").find();
 
-    let theme = "Adwaita";
-    let mut cache = Cache::new().unwrap();
-    cache.load(theme).unwrap();
-    let icon: Option<PathBuf> = cache.lookup("firefox", theme);
-    let icon2: Option<PathBuf> = cache.lookup("kitty", theme);
-    let icon3 = lookup("firefox").find();
-    let icon4 = lookup("kate").find();
-
-    println!("{:?}", icon);
-    println!("{:?}", icon2);
-    println!("{:?}", icon3);
-    println!("{:?}", icon4);
-
-    Ok(())
-
+    //println!("{:?}", icon);
+    //println!("{:?}", icon2);
+    //println!("{:?}", icon3);
+    //println!("{:?}", icon4);
+    //
 }
-
-
 //use gtk::{glib, prelude::*};
 //
 //fn main() -> glib::ExitCode {
