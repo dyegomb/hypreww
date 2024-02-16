@@ -70,20 +70,20 @@ fn main() -> hyprland::Result<()> {
     //println!("{:?}", c.title);
     //});
 
-    let window_list = |a: &_,b: &_| {
-        println!("a: {:?}, b: {:?}", a, b);
-        list_apps()
-        .iter()
-        .map(|c| {
-            (
-                c.address.to_string(),
-                &c.class,
-                get_icon(c, "suru-4all-dark"),
-            )
-        })
-        .for_each(|i| println!("{:?}", i))};
-
-    window_list("","");
+//    let window_list = |a: &_,b: &_| {
+//        println!("a: {:?}, b: {:?}", a, b);
+//        list_apps()
+//        .iter()
+//        .map(|c| {
+//            (
+//                c.address.to_string(),
+//                &c.class,
+//                get_icon(c, "suru-4all-dark"),
+//            )
+//        })
+//        .for_each(|i| println!("{:?}", i))};
+//
+//    window_list("","");
 
     // Create a event listener
     let mut event_listener = EventListener::new();
