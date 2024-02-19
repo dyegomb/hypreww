@@ -1,13 +1,15 @@
 #![doc = include_str ! ("../README.md")]
-
+#[allow(unused, unused_imports)]
 //use freedesktop_icon_lookup::{Cache, LookupParam};
 use freedesktop_icons::lookup;
-#[allow(unused, unused_imports)]
 use hyprland::data::{Client, Clients};
 use hyprland::event_listener::{EventListenerMutable as EventListener, State, WindowOpenEvent};
 use hyprland::prelude::*;
 use std::path::PathBuf;
 use std::str::FromStr;
+
+mod workspaces;
+use workspaces::prelude::*;
 
 fn list_apps() -> Vec<Client> {
     let clients = Clients::get();
@@ -40,8 +42,8 @@ fn get_icon(client: &Client, theme: &str) -> PathBuf {
 
 //fn windows_list(a: &mut State, b: WindowOpenEvent ) -> () {
 fn windows_list() -> () {
-        //println!("a: {:?}, b: {:?}", a, b);
-        list_apps()
+    //println!("a: {:?}, b: {:?}", a, b);
+    list_apps()
         .iter()
         .map(|c| {
             (
@@ -51,7 +53,6 @@ fn windows_list() -> () {
             )
         })
         .for_each(|i| println!("{:?}", i));
-    
 }
 
 fn main() -> hyprland::Result<()> {
@@ -70,24 +71,26 @@ fn main() -> hyprland::Result<()> {
     //println!("{:?}", c.title);
     //});
 
-//    let window_list = |a: &_,b: &_| {
-//        println!("a: {:?}, b: {:?}", a, b);
-//        list_apps()
-//        .iter()
-//        .map(|c| {
-//            (
-//                c.address.to_string(),
-//                &c.class,
-//                get_icon(c, "suru-4all-dark"),
-//            )
-//        })
-//        .for_each(|i| println!("{:?}", i))};
-//
-//    window_list("","");
+    //    let window_list = |a: &_,b: &_| {
+    //        println!("a: {:?}, b: {:?}", a, b);
+    //        list_apps()
+    //        .iter()
+    //        .map(|c| {
+    //            (
+    //                c.address.to_string(),
+    //                &c.class,
+    //                get_icon(c, "suru-4all-dark"),
+    //            )
+    //        })
+    //        .for_each(|i| println!("{:?}", i))};
+    //
+    //    window_list("","");
+    //
+    workspaces::listen();
 
     // Create a event listener
     let mut event_listener = EventListener::new();
-    event_listener.add_window_open_handler(|_,_| windows_list());
+    event_listener.add_window_open_handler(|_, _| windows_list());
     event_listener.start_listener()
 
     //let theme = "suru-4all-dark";
