@@ -86,12 +86,13 @@ fn main() -> hyprland::Result<()> {
     //
     //    window_list("","");
     //
-    workspaces::listen();
+    workspaces::listen_workspaces(9)
+    //workspaces::listen_active();
 
     // Create a event listener
-    let mut event_listener = EventListener::new();
-    event_listener.add_window_open_handler(|_, _| windows_list());
-    event_listener.start_listener()
+    //let mut event_listener = EventListener::new();
+    //event_listener.add_window_open_handler(|_, _| windows_list());
+    //event_listener.start_listener()
 
     //let theme = "suru-4all-dark";
     //let mut cache = Cache::new().unwrap();
