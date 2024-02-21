@@ -88,10 +88,21 @@ fn main() -> hyprland::Result<()> {
     //    window_list("","");
     //
     let cli_matches = Command::new("Hypreww")
-        .group(ArgGroup::new("workspaces"))
-        .arg(Arg::new("listen").short('l').group("workspaces"))
+        //.group(ArgGroup::new("workspaces").conflicts_with("windows"))
+        //.group(ArgGroup::new("windows").conflicts_with("workspaces"))
+        //.arg(Arg::new("listen").short('l'))
+        //.arg(Arg::new("get").short('g').conflicts_with("listen"))
+        //.get_matches();
+        .subcommand(
+            Command::new("workspaces")
+                .arg(Arg::new("get"))
+                .arg(Arg::new("listen")),
+        )
+        .subcommand(Command::new("windows").arg(Arg::new("listen")))
         .get_matches();
-    workspaces::listen_workspaces(9)
+    println!("{:?}", cli_matches);
+    Ok(())
+    //workspaces::listen_workspaces(9)
     //workspaces::listen_active();
 
     // Create a event listener
