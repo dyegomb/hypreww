@@ -1,6 +1,7 @@
 #![doc = include_str ! ("../README.md")]
 #[allow(unused, unused_imports)]
 //use freedesktop_icon_lookup::{Cache, LookupParam};
+use clap::{arg, Arg, ArgGroup, Command};
 use freedesktop_icons::lookup;
 use hyprland::data::{Client, Clients};
 use hyprland::event_listener::{EventListenerMutable as EventListener, State, WindowOpenEvent};
@@ -86,6 +87,10 @@ fn main() -> hyprland::Result<()> {
     //
     //    window_list("","");
     //
+    let cli_matches = Command::new("Hypreww")
+        .group(ArgGroup::new("workspaces"))
+        .arg(Arg::new("listen").short('l').group("workspaces"))
+        .get_matches();
     workspaces::listen_workspaces(9)
     //workspaces::listen_active();
 

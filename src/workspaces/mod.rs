@@ -6,15 +6,28 @@ use hyprland::data::{Workspace, Workspaces};
 use hyprland::prelude::*;
 use hyprland::shared::Address;
 use serde::Serialize;
+use std::cmp::Ordering;
 use std::collections::BTreeMap;
 use std::default;
 
 pub mod prelude {}
 
-#[derive(Serialize, Ord, Eq, PartialEq, PartialOrd, Clone)]
+#[derive(Serialize, Eq, PartialOrd, Clone)]
 struct SimpleWindow {
     id: i32,
     windows: u16,
+}
+
+impl PartialEq for SimpleWindow {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+
+impl Ord for SimpleWindow {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.id.cmp(&other.id)
+    }
 }
 
 fn get_workspaces(num: usize) {
@@ -49,7 +62,7 @@ fn get_workspaces(num: usize) {
             );
         }
         Err(_) => {
-            println!("{}", serde_json::json!([{"id":1, "windows":0}]));
+            println!("[{{\"id\": 1, \"windows\":0}}]");
         }
     }
 }
@@ -57,9 +70,9 @@ fn get_workspaces(num: usize) {
 pub fn listen_workspaces(num: usize) -> hyprland::Result<()> {
     let mut listener = hyprland::event_listener::EventListenerMutable::new();
 
-    listener.add_window_moved_handler( move |_, _| {get_workspaces(num)});
-    listener.add_window_open_handler( move |_, _| {get_workspaces(num)});
-    listener.add_window_close_handler( move |_, _| {get_workspaces(num)});
+    listener.add_window_moved_handler(move |_, _| get_workspaces(num));
+    listener.add_window_open_handler(move |_, _| get_workspaces(num));
+    listener.add_window_close_handler(move |_, _| get_workspaces(num));
 
     get_workspaces(num);
     listener.start_listener()
