@@ -1,16 +1,74 @@
 #![doc = include_str ! ("../README.md")]
 #[allow(unused, unused_imports)]
 //use freedesktop_icon_lookup::{Cache, LookupParam};
-use clap::{arg, Arg, ArgGroup, Command};
+use clap::{arg, Arg, ArgGroup, Command, FromArgMatches as _};
+use clap::{Parser, Args, Subcommand, ValueEnum};
 use freedesktop_icons::lookup;
 use hyprland::data::{Client, Clients};
 use hyprland::event_listener::{EventListenerMutable as EventListener, State, WindowOpenEvent};
 use hyprland::prelude::*;
+use hyprland::shared::HyprError;
+use serde::de::value;
+use core::panic;
 use std::path::PathBuf;
 use std::str::FromStr;
 
 mod workspaces;
 use workspaces::prelude::*;
+
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct CliArgs {
+    #[command(subcommand)]
+    cmd: Subcmds,
+
+    //#[arg(value_enum)]
+    //action: Action,
+}
+
+#[derive(Clone, Debug, Subcommand)]
+enum Subcmds {
+    #[command()]
+    Workspaces(WorkspacesActions),
+    Windows(WindowsActions),
+}
+
+#[derive(Debug, ValueEnum, Clone)]
+enum Action {
+    Listen,
+    Show,
+    Active,
+}
+
+#[derive(Debug, Clone, Args)]
+struct WorkspacesActions{
+    #[arg(short, long)]
+    listen: bool,
+    show: bool,
+    active: bool
+
+}
+
+#[derive(Debug, Clone, Args)]
+struct WindowsActions{
+    //#[arg(short, long)]
+    action: WindowsArgs
+}
+
+#[derive(Debug, Clone, ValueEnum)]
+enum WorkspacesArgs {
+    #[value(alias("l"))]
+    Listen,
+    Show,
+    Active,
+}
+
+#[derive(Debug, Clone, ValueEnum)]
+enum WindowsArgs {
+    Listen,
+    Show,
+    Active,
+}
 
 fn list_apps() -> Vec<Client> {
     let clients = Clients::get();
@@ -87,20 +145,48 @@ fn main() -> hyprland::Result<()> {
     //
     //    window_list("","");
     //
-    let cli_matches = Command::new("Hypreww")
-        //.group(ArgGroup::new("workspaces").conflicts_with("windows"))
-        //.group(ArgGroup::new("windows").conflicts_with("workspaces"))
-        //.arg(Arg::new("listen").short('l'))
-        //.arg(Arg::new("get").short('g').conflicts_with("listen"))
-        //.get_matches();
-        .subcommand(
-            Command::new("workspaces")
-                .arg(Arg::new("get"))
-                .arg(Arg::new("listen")),
-        )
-        .subcommand(Command::new("windows").arg(Arg::new("listen")))
-        .get_matches();
-    println!("{:?}", cli_matches);
+
+    let cli = CliArgs::parse();
+
+    println!("{:?}", cli);
+
+    //let cli_matches = Command::new("Hypreww")
+    //    //.group(ArgGroup::new("workspaces").conflicts_with("windows"))
+    //    //.group(ArgGroup::new("windows").conflicts_with("workspaces"))
+    //    //.arg(Arg::new("listen").short('l'))
+    //    //.arg(Arg::new("get").short('g').conflicts_with("listen"))
+    //    //.get_matches();
+    //    .subcommand(
+    //        Command::new("workspaces")
+    //            .arg(Arg::new("show").short('s').exclusive(true))
+    //            .arg(Arg::new("get-active").short('g').exclusive(true))
+    //            .arg(Arg::new("listen").short('l').exclusive(true)),
+    //    )
+    //    .subcommand(
+    //        Command::new("windows")
+    //            .arg(Arg::new("listen").exclusive(true))
+    //            .arg(Arg::new("show").exclusive(true)),
+    //    )
+    //    .get_matches();
+
+    //println!("{:?}", cli_matches);
+    //println!(
+    //    "{:?}",
+    //    cli_matches
+    //        //.subcommand_matches("workspaces")
+    //        .subcommand()
+    //        .unwrap()
+    //        //.get_occurrences::<String>("listen")
+    //);
+
+    //if let Some((subcmd, args)) = cli_matches.subcommand() {
+    //    match subcmd {
+    //        "workspaces" => println!("Workspaces: {:?}", args.ids()),
+    //        "windows" => println!("Windows: {:?}", args),
+    //        _ => unreachable!("Ooops!"),
+    //    }
+    //}
+
     Ok(())
     //workspaces::listen_workspaces(9)
     //workspaces::listen_active();
