@@ -30,7 +30,7 @@ impl Ord for SimpleWindow {
     }
 }
 
-fn get_workspaces(num: usize) {
+pub fn get_workspaces(num: usize) {
     let mut windows = BTreeMap::new();
     let mut jsonfy = Vec::with_capacity(num);
     match Workspaces::get() {
