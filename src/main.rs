@@ -2,14 +2,14 @@
 #[allow(unused, unused_imports)]
 //use freedesktop_icon_lookup::{Cache, LookupParam};
 use clap::{arg, Arg, ArgGroup, Command, FromArgMatches as _};
-use clap::{Parser, Args, Subcommand, ValueEnum};
+use clap::{Args, Parser, Subcommand, ValueEnum};
+use core::panic;
 use freedesktop_icons::lookup;
 use hyprland::data::{Client, Clients};
 use hyprland::event_listener::{EventListenerMutable as EventListener, State, WindowOpenEvent};
 use hyprland::prelude::*;
 use hyprland::shared::HyprError;
 use serde::de::value;
-use core::panic;
 use std::path::PathBuf;
 use std::str::FromStr;
 
@@ -21,15 +21,16 @@ use workspaces::prelude::*;
 struct CliArgs {
     #[command(subcommand)]
     cmd: Subcmds,
-
     //#[arg(value_enum)]
     //action: Action,
 }
 
+//https://docs.rs/clap/latest/clap/_derive/_cookbook/typed_derive/index.html
 #[derive(Clone, Debug, Subcommand)]
 enum Subcmds {
-    #[command()]
+    #[command(alias("ws"))]
     Workspaces(WorkspacesActions),
+    #[command(alias("w"))]
     Windows(WindowsActions),
 }
 
@@ -40,19 +41,23 @@ enum Action {
     Active,
 }
 
-#[derive(Debug, Clone, Args)]
-struct WorkspacesActions{
-    #[arg(short, long)]
-    listen: bool,
-    show: bool,
-    active: bool
+// Derive attributes
+// https://docs.rs/clap/latest/clap/_derive/index.html#attributes
 
+#[derive(Debug, Clone, Args)]
+struct WorkspacesActions {
+    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    listen: bool,
+    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    show: bool,
+    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    active: bool,
 }
 
 #[derive(Debug, Clone, Args)]
-struct WindowsActions{
+struct WindowsActions {
     //#[arg(short, long)]
-    action: WindowsArgs
+    action: WindowsArgs,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
