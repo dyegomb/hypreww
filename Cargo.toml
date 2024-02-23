@@ -7,10 +7,25 @@ edition = "2021"
 
 [dependencies]
 #gtk = { version = "0.8.0", package = "gtk4", features = ["v4_12"] }
-hyprland = "0.3"
+hyprland = { version = "0.3", features = ["silent"] }
 #freedesktop-icon-lookup = "0.1"
 freedesktop-icons = "0.2"
 serde_json = "1.0"
 serde = "1.0"
 clap = { version = "4.5.*", features = ["derive"] }
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+codegen-units = 1
+opt-level = 3
+#opt-level = "z"
+lto = "fat"
+strip = "symbols"
+# strip = true
+panic = "abort"
+debug = false
+debug-assertions = false
+overflow-checks = false
 

@@ -1,21 +1,20 @@
 #![doc = include_str ! ("../README.md")]
-#[allow(unused, unused_imports)]
+
 //use freedesktop_icon_lookup::{Cache, LookupParam};
-use clap::{arg, Arg, ArgGroup, Command, FromArgMatches as _};
-use clap::{Args, Parser, Subcommand, ValueEnum};
-use core::panic;
-use std::any::Any;
-use freedesktop_icons::lookup;
-use hyprland::data::{Client, Clients};
-use hyprland::event_listener::{EventListenerMutable as EventListener, State, WindowOpenEvent};
-use hyprland::prelude::*;
-use hyprland::shared::HyprError;
-use serde::de::value;
-use std::path::PathBuf;
-use std::str::FromStr;
+use clap::{arg, Args, Parser, Subcommand, ValueEnum};
+//use core::panic;
+//use std::any::Any;
+//use freedesktop_icons::lookup;
+//use hyprland::data::{Client, Clients};
+//use hyprland::event_listener::{EventListenerMutable as EventListener, State, WindowOpenEvent};
+//use hyprland::prelude::*;
+//use hyprland::shared::HyprError;
+//use serde::de::value;
+//use std::path::PathBuf;
+//use std::str::FromStr;
 
 mod workspaces;
-use workspaces::prelude::*;
+//use workspaces::prelude::*;
 mod windows;
 
 #[derive(Parser, Debug)]
@@ -36,12 +35,12 @@ enum Subcmds {
     Windows(WindowsActions),
 }
 
-#[derive(Debug, ValueEnum, Clone)]
-enum Action {
-    Listen,
-    Show,
-    Active,
-}
+//#[derive(Debug, ValueEnum, Clone)]
+//enum Action {
+//    Listen,
+//    Show,
+//    Active,
+//}
 
 // Derive attributes
 // https://docs.rs/clap/latest/clap/_derive/index.html#attributes
@@ -54,6 +53,8 @@ struct WorkspacesActions {
     show: bool,
     #[arg(short, long, action = clap::ArgAction::SetTrue)]
     active: bool,
+    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    change: bool,
 }
 
 #[derive(Debug, Clone, Args)]
@@ -87,12 +88,10 @@ struct WindowsActions {
 //    Active,
 //}
 
-
-fn main() -> hyprland::Result<()> {
-
+fn main() {
     let cli = CliArgs::parse();
 
-    println!("{:?}", cli);
+    //println!("{:?}", cli);
 
     //let cli_matches = Command::new("Hypreww")
     //    //.group(ArgGroup::new("workspaces").conflicts_with("windows"))
@@ -116,12 +115,11 @@ fn main() -> hyprland::Result<()> {
     match cli.cmd {
         Subcmds::Windows(actions) => {
             if actions.show {
-                windows::windows_list();
+                windows::windows_list("suru-4all-dark");
             }
             if actions.active {}
             if actions.listen {}
-            println!("Windows...");
-        },
+        }
         Subcmds::Workspaces(actions) => {
             if actions.show {
                 workspaces::get_workspaces(9);
@@ -132,10 +130,8 @@ fn main() -> hyprland::Result<()> {
             if actions.listen {
                 let _ = workspaces::listen_workspaces(9);
             }
-        },
+        }
     };
-
-    Ok(())
 }
 
 //use gtk::{glib, prelude::*};

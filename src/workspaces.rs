@@ -1,14 +1,18 @@
 // [{"id":"1","windows":2},{"id":"2","windows":1},{"id":"3","windows":0},{"id":"4","windows":0},{"id":"5","windows":0},{"id":"6","windows":0},{"id":"7","windows":0},{"id":"8","windows":0},{"id":"9","windows":0}]
 //
-use hyprland::data::{Client, Clients};
+//use hyprland::data::{Client, Clients};
 use hyprland::data::{Workspace, Workspaces};
+use hyprland::dispatch::{Dispatch, DispatchType, WorkspaceIdentifierWithSpecial};
+//use hyprland::data::Workspaces;
 //use hyprland::event_listener::{EventListenerMutable as EventListener, State, WindowOpenEvent};
 use hyprland::prelude::*;
-use hyprland::shared::Address;
+use hyprland::keyword::*;
+//use hyprland::shared::Address;
 use serde::Serialize;
+use core::str;
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
-use std::default;
+//use std::default;
 
 pub mod prelude {}
 
@@ -27,6 +31,16 @@ impl PartialEq for SimpleWindow {
 impl Ord for SimpleWindow {
     fn cmp(&self, other: &Self) -> Ordering {
         self.id.cmp(&other.id)
+    }
+}
+
+fn get_ws_active() -> i32 {
+    if let Ok(active) = Workspace::get_active() {
+        println!("{}", active.id);
+        active.id
+    } else {
+        println!("{}", 1);
+        1
     }
 }
 
@@ -80,9 +94,25 @@ pub fn listen_workspaces(num: usize) -> hyprland::Result<()> {
 
 pub fn listen_active() -> hyprland::Result<()> {
     let mut listener = hyprland::event_listener::EventListenerMutable::new();
+    get_ws_active();
 
     listener.add_workspace_change_handler(|w, _| {
-        println!("{}", w.to_string());
+        println!("{}", w);
+    });
+    listener.add_active_window_change_handler(|_, _| {
+        get_ws_active();
     });
     listener.start_listener()
 }
+
+pub fn change_active_workspace(num: usize, direction: &str) -> hyprland::Result<()> {
+    let current = get_ws_active();
+    let change_to = match direction {
+        "up" => (current + 1).clamp(1, num as i32),
+        "down" => (current - 1).clamp(1, num as i32),
+        _ => current as i32
+    };
+
+    Dispatch::call(DispatchType::Workspace(WorkspaceIdentifierWithSpecial::Id(change_to)))
+}
+

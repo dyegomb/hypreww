@@ -1,9 +1,9 @@
 use freedesktop_icons::lookup;
 use hyprland::data::{Client, Clients};
-use hyprland::event_listener::{EventListenerMutable as EventListener, State, WindowOpenEvent};
+//use hyprland::event_listener::{EventListenerMutable as EventListener, State, WindowOpenEvent};
 use hyprland::prelude::*;
-use hyprland::shared::HyprError;
-use serde::de::value;
+//use hyprland::shared::HyprError;
+//use serde::de::value;
 use std::path::PathBuf;
 use std::str::FromStr;
 
@@ -37,7 +37,7 @@ pub fn get_icon(client: &Client, theme: &str) -> PathBuf {
 }
 
 //fn windows_list(a: &mut State, b: WindowOpenEvent ) -> () {
-pub fn windows_list() -> () {
+pub fn windows_list(theme: &str) -> () {
     //println!("a: {:?}, b: {:?}", a, b);
     list_apps()
         .iter()
@@ -45,7 +45,8 @@ pub fn windows_list() -> () {
             (
                 c.address.to_string(),
                 &c.class,
-                get_icon(c, "suru-4all-dark"),
+                //get_icon(c, "suru-4all-dark"),
+                get_icon(c, theme),
             )
         })
         .for_each(|i| println!("{:?}", i));
