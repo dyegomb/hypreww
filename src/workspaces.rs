@@ -8,8 +8,8 @@ use hyprland::dispatch::{Dispatch, DispatchType, WorkspaceIdentifierWithSpecial}
 use hyprland::prelude::*;
 //use hyprland::keyword::*;
 //use hyprland::shared::Address;
-use serde::Serialize;
 use core::str;
+use serde::Serialize;
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
 //use std::default;
@@ -105,14 +105,18 @@ pub fn listen_active() -> hyprland::Result<()> {
     listener.start_listener()
 }
 
-pub fn change_active_workspace(num: usize, direction: &str) -> hyprland::Result<()> {
-    let current = get_ws_active();
+pub fn change_active_workspace(num: usize, current: i32, direction: &str) -> hyprland::Result<()> {
+    //let current = get_ws_active();
     let change_to = match direction {
-        "up" => (current + 1).clamp(1, num as i32),
-        "down" => (current - 1).clamp(1, num as i32),
-        _ => current as i32
+        "up" => (current - 1).clamp(1, num as i32),
+        "down" => (current + 1).clamp(1, num as i32),
+        _ => {
+            println!("Got direction: {}", direction);
+            current as i32
+        },
     };
 
-    Dispatch::call(DispatchType::Workspace(WorkspaceIdentifierWithSpecial::Id(change_to)))
+    Dispatch::call(DispatchType::Workspace(WorkspaceIdentifierWithSpecial::Id(
+        change_to,
+    )))
 }
-
