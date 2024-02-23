@@ -53,8 +53,8 @@ struct WorkspacesActions {
     show: bool,
     #[arg(short, long, action = clap::ArgAction::SetTrue)]
     active: bool,
-    #[arg(short, long, action = clap::ArgAction::SetTrue)]
-    change: bool,
+    #[arg(short, long, num_args(2))]
+    change: Vec<String>,
 }
 
 #[derive(Debug, Clone, Args)]
@@ -123,6 +123,9 @@ fn main() {
         Subcmds::Workspaces(actions) => {
             if actions.show {
                 workspaces::get_workspaces(9);
+            }
+            if !actions.change.is_empty() {
+                println!("{:?}", actions.change);
             }
             if actions.active {
                 let _ = workspaces::listen_active();
