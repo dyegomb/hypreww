@@ -1,20 +1,11 @@
-// [{"id":"1","windows":2},{"id":"2","windows":1},{"id":"3","windows":0},{"id":"4","windows":0},{"id":"5","windows":0},{"id":"6","windows":0},{"id":"7","windows":0},{"id":"8","windows":0},{"id":"9","windows":0}]
-//
-//use hyprland::data::{Client, Clients};
 use hyprland::data::{Workspace, Workspaces};
 use hyprland::dispatch::{Dispatch, DispatchType, WorkspaceIdentifierWithSpecial};
-//use hyprland::data::Workspaces;
-//use hyprland::event_listener::{EventListenerMutable as EventListener, State, WindowOpenEvent};
 use hyprland::prelude::*;
-//use hyprland::keyword::*;
-//use hyprland::shared::Address;
 use core::str;
 use serde::Serialize;
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
-//use std::default;
 
-pub mod prelude {}
 
 #[derive(Serialize, Eq, PartialOrd, Clone)]
 struct SimpleWindow {
@@ -106,7 +97,6 @@ pub fn listen_active() -> hyprland::Result<()> {
 }
 
 pub fn change_active_workspace(num: usize, current: i32, direction: &str) -> hyprland::Result<()> {
-    //let current = get_ws_active();
     let change_to = match direction {
         "up" => (current - 1).clamp(1, num as i32),
         "down" => (current + 1).clamp(1, num as i32),

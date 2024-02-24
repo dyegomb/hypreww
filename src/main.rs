@@ -1,6 +1,6 @@
 #![doc = include_str ! ("../README.md")]
 
-use clap::{arg, Args, Parser, Subcommand, ValueEnum};
+use clap::{arg, Args, Parser, Subcommand};
 
 mod workspaces;
 mod windows;
