@@ -64,7 +64,6 @@ fn main() {
                 workspaces::get_workspaces(workspaces_num);
             }
             if !actions.change.is_empty() {
-                //println!("{:?}", actions.change);
                 let _ = workspaces::change_active_workspace(
                     workspaces_num,
                     actions.change[1].parse().unwrap_or(1),
