@@ -6,7 +6,7 @@ use serde::Serialize;
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
 
-#[derive(Serialize, Eq, PartialOrd, Clone)]
+#[derive(Serialize, Eq, Clone)]
 struct SimpleWindow {
     id: i32,
     windows: u16,
@@ -21,6 +21,12 @@ impl PartialEq for SimpleWindow {
 impl Ord for SimpleWindow {
     fn cmp(&self, other: &Self) -> Ordering {
         self.id.cmp(&other.id)
+    }
+}
+
+impl PartialOrd for SimpleWindow {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -101,7 +107,7 @@ pub fn change_active_workspace(num: usize, current: i32, direction: &str) -> hyp
         "down" => (current + 1).clamp(1, num as i32),
         _ => {
             println!("Got direction: {}", direction);
-            current as i32
+            current
         }
     };
 

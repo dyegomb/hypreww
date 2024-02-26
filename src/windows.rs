@@ -18,7 +18,7 @@ pub fn list_apps() -> Vec<Client> {
     match clients {
         Ok(clients) => clients
             .into_iter()
-            .filter(|c| c.class != "")
+            .filter(|c| !c.class.is_empty())
             .collect::<Vec<Client>>(),
         Err(_) => Vec::new(),
     }
@@ -39,7 +39,7 @@ fn get_icon(client: &Client, theme: &str) -> PathBuf {
     }
 }
 
-pub fn windows_list(theme: &str) -> () {
+pub fn windows_list(theme: &str) {
     let jsonfy = list_apps()
         .iter()
         .map(|c| Task {
