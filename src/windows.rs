@@ -53,3 +53,14 @@ pub fn windows_list(theme: &str) {
         serde_json::to_string(&jsonfy).unwrap_or("[]".to_string())
     );
 }
+
+pub fn listen(theme: &'static str) -> Result<(), hyprland::shared::HyprError> {
+    let mut listener = hyprland::event_listener::EventListenerMutable::new();
+    //let theme_arc = Arc::new(theme.to_string());
+
+    listener.add_window_moved_handler(move |_, _| windows_list(theme));
+    listener.add_window_open_handler(move |_, _| windows_list(theme));
+    listener.add_window_close_handler(move |_, _| windows_list(theme));
+
+    listener.start_listener()
+}

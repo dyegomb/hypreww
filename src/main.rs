@@ -55,7 +55,9 @@ fn main() {
                 windows::windows_list("suru-4all-dark");
             }
             if actions.active {}
-            if actions.listen {}
+            if actions.listen {
+                let _ = windows::listen("suru-4all-dark");
+            }
         }
         Subcmds::Workspaces(actions) => {
             let workspaces_num = 9;
