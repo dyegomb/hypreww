@@ -1,11 +1,10 @@
+use core::str;
 use hyprland::data::{Workspace, Workspaces};
 use hyprland::dispatch::{Dispatch, DispatchType, WorkspaceIdentifierWithSpecial};
 use hyprland::prelude::*;
-use core::str;
 use serde::Serialize;
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
-
 
 #[derive(Serialize, Eq, PartialOrd, Clone)]
 struct SimpleWindow {
@@ -103,7 +102,7 @@ pub fn change_active_workspace(num: usize, current: i32, direction: &str) -> hyp
         _ => {
             println!("Got direction: {}", direction);
             current as i32
-        },
+        }
     };
 
     Dispatch::call(DispatchType::Workspace(WorkspaceIdentifierWithSpecial::Id(

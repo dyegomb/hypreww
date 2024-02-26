@@ -2,8 +2,8 @@
 
 use clap::{arg, Args, Parser, Subcommand};
 
-mod workspaces;
 mod windows;
+mod workspaces;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -46,7 +46,6 @@ struct WindowsActions {
     active: bool,
 }
 
-
 fn main() {
     let cli = CliArgs::parse();
 
@@ -79,4 +78,3 @@ fn main() {
         }
     };
 }
-
