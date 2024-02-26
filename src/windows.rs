@@ -12,7 +12,7 @@ struct Task {
     icon: PathBuf,
 }
 
-pub fn list_apps() -> Vec<Client> {
+fn list_apps() -> Vec<Client> {
     let clients = Clients::get();
 
     match clients {
