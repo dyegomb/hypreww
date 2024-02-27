@@ -4,6 +4,8 @@ use hyprland::prelude::*;
 use serde::Serialize;
 use std::path::PathBuf;
 use std::str::FromStr;
+//use std::sync::Arc;
+use std::rc::Rc;
 
 #[derive(Serialize)]
 struct Task {
@@ -54,13 +56,16 @@ pub fn windows_list(theme: &str) {
     );
 }
 
-pub fn listen(theme: &'static str) -> Result<(), hyprland::shared::HyprError> {
+pub fn listen(theme: &str) -> Result<(), hyprland::shared::HyprError> {
     let mut listener = hyprland::event_listener::EventListenerMutable::new();
-    //let theme_arc = Arc::new(theme.to_string());
+    let theme_rc = Rc::new(theme.to_string());
 
-    listener.add_window_moved_handler(move |_, _| windows_list(theme));
-    listener.add_window_open_handler(move |_, _| windows_list(theme));
-    listener.add_window_close_handler(move |_, _| windows_list(theme));
+    let theme = theme_rc.clone();
+    listener.add_window_moved_handler(move |_, _| windows_list(&theme));
+    let theme = theme_rc.clone();
+    listener.add_window_open_handler(move |_, _| windows_list(&theme));
+    let theme = theme_rc.clone();
+    listener.add_window_close_handler(move |_, _| windows_list(&theme));
 
     listener.start_listener()
 }
