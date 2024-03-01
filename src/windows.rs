@@ -1,16 +1,18 @@
 use freedesktop_icons::lookup;
 use hyprland::data::{Client, Clients};
+use hyprland::dispatch::{Dispatch, DispatchType, WindowIdentifier};
 use hyprland::prelude::*;
+use hyprland::shared::Address;
 use serde::Serialize;
 use std::path::PathBuf;
 use std::str::FromStr;
-//use std::sync::Arc;
 use std::rc::Rc;
 
 #[derive(Serialize)]
 struct Task {
     address: String,
     class: String,
+    title: String,
     icon: PathBuf,
 }
 
@@ -47,6 +49,7 @@ pub fn windows_list(theme: &str) {
         .map(|c| Task {
             address: c.address.to_string(),
             class: c.class.to_owned(),
+            title: c.title.to_owned(),
             icon: get_icon(c, theme),
         })
         .collect::<Vec<_>>();
@@ -56,7 +59,7 @@ pub fn windows_list(theme: &str) {
     );
 }
 
-pub fn listen(theme: &str) -> Result<(), hyprland::shared::HyprError> {
+pub fn listen(theme: &str) -> hyprland::Result<()> {
     let mut listener = hyprland::event_listener::EventListenerMutable::new();
     let theme_rc = Rc::new(theme.to_string());
 
@@ -70,4 +73,10 @@ pub fn listen(theme: &str) -> Result<(), hyprland::shared::HyprError> {
     listener.add_window_close_handler(move |_, _| windows_list(&theme));
 
     listener.start_listener()
+}
+
+pub fn window_change(address: &str) -> hyprland::Result<()> {
+    Dispatch::call(DispatchType::FocusWindow(WindowIdentifier::Address(
+        Address::new(address),
+    )))
 }

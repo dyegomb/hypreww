@@ -1,6 +1,7 @@
 #![doc = include_str ! ("../README.md")]
 
 use clap::{arg, Args, Parser, Subcommand};
+use windows::window_change;
 
 mod windows;
 mod workspaces;
@@ -46,6 +47,8 @@ struct WindowsActions {
     active: bool,
     #[arg(short, long)]
     icon_theme: Option<String>,
+    #[arg(short, long)]
+    change: Option<String>,
 }
 
 fn main() {
@@ -60,7 +63,10 @@ fn main() {
                     windows::windows_list("Papirus");
                 }
             }
-            if actions.active {}
+            if let Some(address) = actions.change {
+                let _ = window_change(&address);
+            }
+            if actions.active { unimplemented!() }
             if actions.listen {
                 if let Some(ref theme) = actions.icon_theme {
                     let _ = windows::listen(theme);
