@@ -60,6 +60,8 @@ pub fn listen(theme: &str) -> Result<(), hyprland::shared::HyprError> {
     let mut listener = hyprland::event_listener::EventListenerMutable::new();
     let theme_rc = Rc::new(theme.to_string());
 
+    windows_list(theme);
+
     let theme = Rc::clone(&theme_rc);
     listener.add_window_moved_handler(move |_, _| windows_list(&theme));
     let theme = Rc::clone(&theme_rc);
