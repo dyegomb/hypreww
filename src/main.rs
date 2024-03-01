@@ -44,6 +44,8 @@ struct WindowsActions {
     show: bool,
     #[arg(short, long, action = clap::ArgAction::SetTrue)]
     active: bool,
+    #[arg(short, long)]
+    icon_theme: Option<String>,
 }
 
 fn main() {
@@ -52,11 +54,19 @@ fn main() {
     match cli.cmd {
         Subcmds::Windows(actions) => {
             if actions.show {
-                windows::windows_list("suru-4all-dark");
+                if let Some(ref theme) = actions.icon_theme {
+                    windows::windows_list(theme);
+                } else {
+                    windows::windows_list("Papirus");
+                }
             }
             if actions.active {}
             if actions.listen {
-                let _ = windows::listen("suru-4all-dark");
+                if let Some(ref theme) = actions.icon_theme {
+                    let _ = windows::listen(theme);
+                } else {
+                    let _ = windows::listen("Papirus");
+                }
             }
         }
         Subcmds::Workspaces(actions) => {
