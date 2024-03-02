@@ -1,7 +1,7 @@
 #![doc = include_str ! ("../README.md")]
 
 use clap::{arg, Args, Parser, Subcommand};
-use windows::window_change;
+use windows::{get_icon, window_change};
 
 mod windows;
 mod workspaces;
@@ -48,6 +48,8 @@ struct WindowsActions {
     #[arg(short, long)]
     icon_theme: Option<String>,
     #[arg(short, long)]
+    which_icon: Option<String>,
+    #[arg(short, long)]
     change: Option<String>,
 }
 
@@ -66,7 +68,20 @@ fn main() {
             if let Some(address) = actions.change {
                 let _ = window_change(&address);
             }
-            if actions.active { unimplemented!() }
+            if actions.active {
+                unimplemented!()
+            }
+            if actions.which_icon.is_some() {
+                if let (Some(theme), Some(ref app)) = (&actions.icon_theme, &actions.which_icon) {
+                    println!("{}", get_icon(app, theme).to_string_lossy());
+                } else {
+                    println!(
+                        "{}",
+                        get_icon(&actions.which_icon.unwrap(), "Papirus")
+                            .to_string_lossy()
+                    );
+                }
+            }
             if actions.listen {
                 if let Some(ref theme) = actions.icon_theme {
                     let _ = windows::listen(theme);
