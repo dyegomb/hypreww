@@ -67,7 +67,7 @@ fn main() {
                 if let Some(ref theme) = actions.icon_theme {
                     windows::windows_list(theme);
                 } else {
-                    windows::windows_list("Papirus");
+                    windows::windows_list("hicolor");
                 }
             }
             if let Some(address) = actions.change {
@@ -82,7 +82,7 @@ fn main() {
                 } else {
                     println!(
                         "{}",
-                        get_icon(&actions.which_icon.unwrap(), "Papirus").to_string_lossy()
+                        get_icon(&actions.which_icon.unwrap(), "hicolor").to_string_lossy()
                     );
                 }
             }
@@ -90,7 +90,7 @@ fn main() {
                 if let Some(ref theme) = actions.icon_theme {
                     let _ = windows::listen(theme);
                 } else {
-                    let _ = windows::listen("Papirus");
+                    let _ = windows::listen("hicolor");
                 }
             }
         }
