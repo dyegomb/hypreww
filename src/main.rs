@@ -7,7 +7,7 @@ mod windows;
 mod workspaces;
 
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(version, about = "A helper to integrate Hyprland to Eww", long_about = None)]
 struct CliArgs {
     #[command(subcommand)]
     cmd: Subcmds,
@@ -27,29 +27,34 @@ enum Subcmds {
 
 #[derive(Debug, Clone, Args)]
 struct WorkspacesActions {
-    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    #[arg(short, long, action = clap::ArgAction::SetTrue, help="start listening to workspaces changes")]
     listen: bool,
-    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    #[arg(short, long, action = clap::ArgAction::SetTrue, help="show workspaces states")]
     show: bool,
-    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    #[arg(short, long, action = clap::ArgAction::SetTrue, help="start listen to active workspace")]
     active: bool,
-    #[arg(short, long, num_args(2))]
+    #[arg(
+        short,
+        long,
+        num_args(2),
+        help = "(up|down) (1-9)  change active workspace up or down based on current"
+    )]
     change: Vec<String>,
 }
 
 #[derive(Debug, Clone, Args)]
 struct WindowsActions {
-    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    #[arg(short, long, action=clap::ArgAction::SetTrue, help="listen to change on window clients")]
     listen: bool,
-    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    #[arg(short, long, action=clap::ArgAction::SetTrue, help="show current windows states")]
     show: bool,
-    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    #[arg(short, long, action=clap::ArgAction::SetTrue, help="show current active window")]
     active: bool,
-    #[arg(short, long)]
+    #[arg(short, long, help="specify icon theme")]
     icon_theme: Option<String>,
-    #[arg(short, long)]
+    #[arg(short, long, help="get the icon file for a specific application")]
     which_icon: Option<String>,
-    #[arg(short, long)]
+    #[arg(short, long, help="change current active window to informed address")]
     change: Option<String>,
 }
 
@@ -77,8 +82,7 @@ fn main() {
                 } else {
                     println!(
                         "{}",
-                        get_icon(&actions.which_icon.unwrap(), "Papirus")
-                            .to_string_lossy()
+                        get_icon(&actions.which_icon.unwrap(), "Papirus").to_string_lossy()
                     );
                 }
             }
