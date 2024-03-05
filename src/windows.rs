@@ -6,7 +6,6 @@ use hyprland::shared::Address;
 use serde::Serialize;
 use std::path::PathBuf;
 use std::rc::Rc;
-use std::str::FromStr;
 
 #[derive(Serialize)]
 struct Task {
@@ -30,7 +29,7 @@ fn list_apps() -> Vec<Client> {
 
 fn get_icon_c(client: &Client, theme: &str) -> PathBuf {
     let client_class = client.initial_class.to_lowercase();
-    let default_icon = PathBuf::from_str("~/.local/share/icons/defaul.svg").unwrap();
+    //let default_icon = PathBuf::from_str("~/.local/share/icons/defaul.svg").unwrap();
     match lookup(&client_class).with_theme(theme).find() {
         Some(icon_path) => icon_path,
         None => match lookup(&client_class).find() {
@@ -38,14 +37,14 @@ fn get_icon_c(client: &Client, theme: &str) -> PathBuf {
             None => lookup(client.initial_title.to_lowercase().as_str())
                 .with_theme(theme)
                 .find()
-                .unwrap_or(default_icon),
+                .unwrap_or_default(),
         },
     }
 }
 
 pub fn get_icon(client: &str, theme: &str) -> PathBuf {
     let client_class = client.to_lowercase();
-    let default_icon = PathBuf::from_str("~/.local/share/icons/defaul.svg").unwrap();
+    //let default_icon = PathBuf::from_str("~/.local/share/icons/defaul.svg").unwrap();
     match lookup(&client_class).with_theme(theme).find() {
         Some(icon_path) => icon_path,
         None => match lookup(&client_class).find() {
@@ -53,7 +52,7 @@ pub fn get_icon(client: &str, theme: &str) -> PathBuf {
             None => lookup(&client_class)
                 .with_theme(theme)
                 .find()
-                .unwrap_or(default_icon),
+                .unwrap_or_default(),
         },
     }
 }
