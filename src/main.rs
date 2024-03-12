@@ -1,13 +1,11 @@
-#![doc = include_str ! ("../README.md")]
+mod windows;
+mod workspaces;
 
 use clap::{arg, Args, Parser, Subcommand};
 use windows::{get_icon, window_change};
 
-mod windows;
-mod workspaces;
-
 #[derive(Parser, Debug)]
-#[command(version, about = "A helper to integrate Hyprland to Eww", long_about = None)]
+#[command(version, about = "A helper to integrate Eww to Hyprland", long_about = None)]
 struct CliArgs {
     #[command(subcommand)]
     cmd: Subcmds,
@@ -50,11 +48,11 @@ struct WindowsActions {
     show: bool,
     #[arg(short, long, action=clap::ArgAction::SetTrue, help="show current active window")]
     active: bool,
-    #[arg(short, long, help="specify icon theme")]
+    #[arg(short, long, help = "specify icon theme")]
     icon_theme: Option<String>,
-    #[arg(short, long, help="get the icon file for a specific application")]
+    #[arg(short, long, help = "get the icon file for a specific application")]
     which_icon: Option<String>,
-    #[arg(short, long, help="change current active window to informed address")]
+    #[arg(short, long, help = "change current active window to informed address")]
     change: Option<String>,
 }
 
